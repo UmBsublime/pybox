@@ -7,8 +7,8 @@ Work in progress
 
 Dependencies
 ------------
-    -> [test](https://github.com/adafruit/Adafruit_Python_GPIO)
-    -> (https://github.com/adafruit/Adafruit_Python_CharLCD)
+[test](https://github.com/adafruit/Adafruit_Python_GPIO)
+(https://github.com/adafruit/Adafruit_Python_CharLCD)
     
 Usage
 -----
