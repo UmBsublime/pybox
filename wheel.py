@@ -22,15 +22,24 @@ class WheelMenu():
 
     def do_command(self):
         command = list(self.menu)[0][1]
-        result = command()
+        #result = command()
 
-        # For now if its a list let's returned asume WheelText
-        if isinstance(result, list):
+        if isinstance(command, deque):
+            print 'deque'
+            old_menu = self.menu
+            self.menu = command
+            while self.do_loop():
+                pass
+            self.menu = old_menu
 
+        # For now if a list is returned let's asume WheelText
+        elif isinstance(command(), list):
+            result = command()
             old_color = self.plate.color
             wheel = WheelText(self.plate, result, GREEN)
             wheel.do_loop()
             self.plate.set_color(old_color)
+
 
         # Else asume result is a tuple (line1, line2)
         else:
@@ -46,6 +55,21 @@ class WheelMenu():
                 self.plate.update_plate(CYAN)
                 time.sleep(WHILE_DELAY)
 
+    def do_loop(self):
+        self.print_menu()
+        while True:
+            self.print_menu()
+            if LCD.is_pressed(BUTTONS['Down']):
+                self.rotate(-1)
+            if LCD.is_pressed(BUTTONS['Up']):
+                self.rotate()
+            if LCD.is_pressed(BUTTONS['Right']):
+                self.do_command()
+            if LCD.is_pressed(BUTTONS['Left']):
+                time.sleep(WHILE_DELAY*2)
+                break
+            self.print_menu()
+            time.sleep(WHILE_DELAY)
 
 class WheelText():
 
@@ -73,6 +97,7 @@ class WheelText():
             if LCD.is_pressed(BUTTONS['Up']):
                 self.rotate()
             if LCD.is_pressed(BUTTONS['Left']):
+                time.sleep(WHILE_DELAY*2)
                 break
             self.print_text()
             time.sleep(WHILE_DELAY)
