@@ -31,7 +31,6 @@ def ipconfig():
         result.append(subnets[i])
         result.append('-'*16)
 
-    result = WheelText(result, GREEN)
     return result
 
 
@@ -64,6 +63,6 @@ def ls():
     for e in result:
         if e == '':
             result.remove(e)
-    result = WheelText(result, GREEN)
+
 
     return result

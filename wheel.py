@@ -22,25 +22,19 @@ class WheelMenu():
 
     def do_command(self):
         command = list(self.menu)[0][1]
-        lines = command()
+        result = command()
 
-        if isinstance(lines, WheelText):
-            wheel = lines
+        # For now if its a list let's returned asume WheelText
+        if isinstance(result, list):
+
             old_color = self.plate.color
-            wheel.plate = self.plate
-            wheel.print_text()
-            while True:
-                if LCD.is_pressed(BUTTONS['Down']):
-                    wheel.rotate(-1)
-                if LCD.is_pressed(BUTTONS['Up']):
-                    wheel.rotate()
-                if LCD.is_pressed(BUTTONS['Left']):
-                    break
-                wheel.print_text()
-                time.sleep(WHILE_DELAY)
+            wheel = WheelText(self.plate, result, GREEN)
+            wheel.do_loop()
             self.plate.set_color(old_color)
+
+        # Else asume result is a tuple (line1, line2)
         else:
-            #lines = command()
+            lines = command()
             counter = 0
             while not LCD.is_pressed(BUTTONS['Left']):
                 if counter >= COMMAND_DELAY:
@@ -55,8 +49,8 @@ class WheelMenu():
 
 class WheelText():
 
-    def __init__(self, text, color=()):
-        self.plate = None
+    def __init__(self, plate, text, color=()):
+        self.plate = plate
         self.text = deque(text)
         self.menu_size = 2
         self.color = color
@@ -70,3 +64,15 @@ class WheelText():
         self.plate.set_color(self.color)
         self.plate.set_lines('\x05'+str(line1), ' '+str(line2))
         self.plate.update_plate()
+
+    def do_loop(self):
+        self.print_text()
+        while True:
+            if LCD.is_pressed(BUTTONS['Down']):
+                self.rotate(-1)
+            if LCD.is_pressed(BUTTONS['Up']):
+                self.rotate()
+            if LCD.is_pressed(BUTTONS['Left']):
+                break
+            self.print_text()
+            time.sleep(WHILE_DELAY)
