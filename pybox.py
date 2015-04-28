@@ -20,6 +20,7 @@ LCD.create_char(7, [31, 17, 21, 21, 21, 21, 17, 31])
 
 
 def main():
+    commands.df()
     print 'Press Ctrl-C to quit.'
     plate = Plate()
 
@@ -32,7 +33,8 @@ def main():
                     ('MemInfo', commands.mem_info)])
 
     dir = deque([('ls', commands.ls),
-                 ('Placeholder', commands.ls)])
+                 ('df', commands.df),
+                 ('who', commands.who)])
     plate.set_color(WHITE)
     menu = WheelMenu(plate, [('Help', commands.help),
                              ('Settings', settings),

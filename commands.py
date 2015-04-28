@@ -64,7 +64,8 @@ def help():
             'navigate through',
             'the menus',
             '----------------',
-            'All menus loop',
+            'Everything that',
+            'scrolls, loops',
             '----------------',
             'Use Right to',
             'select an option',
@@ -76,6 +77,39 @@ def help():
             'way to exit',
             '----------------']
     return help
+
+def who():
+    command = r''' w | tail -n +3| awk '{print $1" "$4}' '''
+    who = cmd(command).split('\n')
+
+    final = ['{:<7} {:<8}'.format('USER', 'LOGIN@'),
+             '-'*16]
+    for w in who:
+        w = w.split(' ')
+        if len(w) >= 2:
+            final.append('{:<7} {:<8}'.format(w[0], w[1]))
+    final.append('-'*16)
+    return final
+
+def df():
+    from collections import deque
+    command = r''' df | grep -v "Filesystem" | awk '{$1=""; print $2" "$5" "$6}' | uniq '''
+    all_parts = cmd(command).split('\n')
+    sorted_part = ['{:<6} {:>3} {:>5}Gb'.format('mount', '%', 'size')]
+    for part in all_parts:
+        part = part.split(' ')
+
+        if len(part) >= 3 and len(part[2]) <= 6:
+            pretty = '{:<6} {:>3} {:.2f}Gb'.format(part[2],
+                                               part[1],
+                                               float(part[0])/1024/1024)
+            sorted_part.append(pretty)
+            print repr(pretty)
+
+
+
+    print (sorted_part)
+    return sorted_part
 
 def ls():
     result = cmd('ls').split('\n')
