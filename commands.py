@@ -57,6 +57,25 @@ def hostname():
     date = cmd('date +"%b %d %H:%M:%S"')
     return '{:^16}'.format(result.strip('\n')), date.strip('\n')
 
+def help():
+    help = ['pybox 0.1',
+            '----------------',
+            'Use Up/Down to',
+            'navigate through',
+            'the menus',
+            '----------------',
+            'All menus loop',
+            '----------------',
+            'Use Right to',
+            'select an option',
+            '----------------',
+            'Use Left to go',
+            'back',
+            '----------------',
+            'Back all the',
+            'way to exit',
+            '----------------']
+    return help
 
 def ls():
     result = cmd('ls').split('\n')

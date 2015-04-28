@@ -11,10 +11,11 @@ class WheelMenu():
         self.menu = deque(menu)
         self.menu_size = 2
 
-    def print_menu(self):
+
+    def print_menu(self, pointer=''):
         line1 = list(self.menu)[0][0]
         line2 = list(self.menu)[1][0]
-        self.plate.set_lines('\x05'+line1, ' '+line2)
+        self.plate.set_lines(pointer+line1, ' '+line2)
         self.plate.update_plate()
 
     def rotate(self, direction=1):
@@ -25,7 +26,6 @@ class WheelMenu():
         #result = command()
 
         if isinstance(command, deque):
-            print 'deque'
             old_menu = self.menu
             self.menu = command
             while self.do_loop():
@@ -37,7 +37,7 @@ class WheelMenu():
             result = command()
             old_color = self.plate.color
             wheel = WheelText(self.plate, result, GREEN)
-            wheel.do_loop()
+            wheel.do_loop(False)
             self.plate.set_color(old_color)
 
 
@@ -54,21 +54,27 @@ class WheelMenu():
                 self.plate.set_lines(lines[0], lines[1])
                 self.plate.update_plate(CYAN)
                 time.sleep(WHILE_DELAY)
+            time.sleep(WHILE_DELAY*2)
 
-    def do_loop(self):
-        self.print_menu()
+    def do_loop(self, pointer = True):
+        #self.print_menu()
         while True:
-            self.print_menu()
+
             if LCD.is_pressed(BUTTONS['Down']):
                 self.rotate(-1)
             if LCD.is_pressed(BUTTONS['Up']):
                 self.rotate()
             if LCD.is_pressed(BUTTONS['Right']):
+                time.sleep(WHILE_DELAY*2)
                 self.do_command()
             if LCD.is_pressed(BUTTONS['Left']):
                 time.sleep(WHILE_DELAY*2)
                 break
-            self.print_menu()
+            #self.print_menu()
+            if pointer:
+                self.print_menu('\x05')
+            else:
+                self.print_menu()
             time.sleep(WHILE_DELAY)
 
 class WheelText():
@@ -82,15 +88,20 @@ class WheelText():
     def rotate(self, direction=1):
         self.text.rotate(direction)
 
-    def print_text(self):
+    def print_text(self, pointer=''):
+        filler = ' '
         line1 = list(self.text)[0]
         line2 = list(self.text)[1]
         self.plate.set_color(self.color)
-        self.plate.set_lines('\x05'+str(line1), ' '+str(line2))
+        if pointer == '':
+            filler = ''
+        self.plate.set_lines(pointer+str(line1), filler+str(line2))
         self.plate.update_plate()
 
-    def do_loop(self):
-        self.print_text()
+
+
+    def do_loop(self, pointer=False):
+        #self.print_text()
         while True:
             if LCD.is_pressed(BUTTONS['Down']):
                 self.rotate(-1)
@@ -99,5 +110,8 @@ class WheelText():
             if LCD.is_pressed(BUTTONS['Left']):
                 time.sleep(WHILE_DELAY*2)
                 break
-            self.print_text()
+            if pointer:
+                self.print_text('\x05')
+            else:
+                self.print_text()
             time.sleep(WHILE_DELAY)

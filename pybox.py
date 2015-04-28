@@ -34,7 +34,8 @@ def main():
     dir = deque([('ls', commands.ls),
                  ('Placeholder', commands.ls)])
     plate.set_color(WHITE)
-    menu = WheelMenu(plate, [('Settings', settings),
+    menu = WheelMenu(plate, [('Help', commands.help),
+                             ('Settings', settings),
                              ('Status', status),
                              ('Dir', dir)])
 
