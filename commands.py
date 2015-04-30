@@ -1,8 +1,5 @@
 from subprocess import check_output
 
-from wheel import WheelText
-from variables import *
-
 
 def cmd(command):
     result = check_output(command, shell=True)
@@ -36,9 +33,18 @@ def ipconfig():
 
 def uptime():
     result = cmd('uptime')
+
     load = result.split(' ')[-3:]
-    up = result.split(',')[0].split('up')[1].strip(' ')
-    return ('{:^16}'.format(up),
+
+    up = result
+    up = up.split('user')[0].split(' ')
+    up = up[:-3]
+    up = up[3:]
+    #clean_up =[]
+    #for i in up:
+    #    clean_up.append(i.strip(','))
+
+    return ('{:^16}'.format(' '.join(up).strip(',')),
             '{}  {}  {}'.format(load[0].strip(','),
                                 load[1].strip(','),
                                 load[2].strip(',')))
@@ -58,7 +64,7 @@ def hostname():
     return '{:^16}'.format(result.strip('\n')), date.strip('\n')
 
 def help():
-    help = ['pybox 0.1',
+    return ['pybox 0.1',
             '----------------',
             'Use Up/Down to',
             'navigate through',
@@ -76,10 +82,10 @@ def help():
             'Back all the',
             'way to exit',
             '----------------']
-    return help
+
 
 def who():
-    command = r''' w | tail -n +3| awk '{print $1" "$4}' '''
+    command = r''' w | tail -n +3| awk '{print $1,$4}' '''
     who = cmd(command).split('\n')
 
     final = ['{:<7} {:<8}'.format('USER', 'LOGIN@'),
@@ -92,23 +98,19 @@ def who():
     return final
 
 def df():
-    from collections import deque
-    command = r''' df | grep -v "Filesystem" | awk '{$1=""; print $2" "$5" "$6}' | uniq '''
+
+    command = r''' df | grep -v "Filesystem" | awk '{$1=""; print $2,$5,$6}' | uniq '''
     all_parts = cmd(command).split('\n')
-    sorted_part = ['{:<6} {:>3} {:>5}Gb'.format('mount', '%', 'size')]
+    sorted_part = ['{:<6} {:>3} {:>5}Gb'.format('mount', '%', 'size'),
+                   '-'*16]
     for part in all_parts:
         part = part.split(' ')
-
         if len(part) >= 3 and len(part[2]) <= 6:
             pretty = '{:<6} {:>3} {:.2f}Gb'.format(part[2],
                                                part[1],
                                                float(part[0])/1024/1024)
             sorted_part.append(pretty)
-            print repr(pretty)
-
-
-
-    print (sorted_part)
+    sorted_part.append('-'*16)
     return sorted_part
 
 def ls():
