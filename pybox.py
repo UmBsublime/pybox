@@ -6,7 +6,7 @@ import time
 
 import commands
 from plate import Plate
-from wheel import WheelMenu
+from widget_types import ScrollType, DynamicType, MenuType
 from variables import *
 from collections import deque
 # create some custom characters
@@ -19,11 +19,43 @@ LCD.create_char(6, [2, 6, 10, 18, 10, 6, 2, 0])
 LCD.create_char(7, [31, 17, 21, 21, 21, 21, 17, 31])
 
 
+
+def dummy():
+        return ['dummy','reporting in']
+filet = ScrollType(['test file1', 'test file2', 'test file3'], GREEN)
+dyn = DynamicType(dummy, BLUE)
+menu = MenuType([('dyn',dyn),
+                     ('filet',filet)], RED)
+
 def main():
     commands.df()
     print 'Press Ctrl-C to quit.'
     plate = Plate()
 
+    ipconf = ScrollType(commands.ipconfig(),GREEN)
+    uptime = DynamicType(commands.uptime, CYAN)
+    menu = MenuType([('Ip Config', ipconf),
+                     ('Uptime', uptime)], WHITE)
+
+    menu.execute()
+
+    line1 = '{:^16}'.format('Quit ?')
+    line2 = '{:^16}'.format('Yes\x06 \x05No')
+    while True:
+        plate.set_lines(line1, line2)
+        plate.update_plate(RED)
+        if LCD.is_pressed(BUTTONS['Left']):
+            plate.set_lines('{:^16}'.format('Goodbye'), '')
+            plate.update_plate(WHITE)
+            time.sleep(2)
+            plate.set_lines('', '')
+            plate.update_plate(OFF)
+            break
+        elif LCD.is_pressed(BUTTONS['Right']):
+            time.sleep(WHILE_DELAY*2)
+            menu.execute()
+        time.sleep(WHILE_DELAY)
+    '''
     settings = deque([('Ip config', commands.ipconfig),
                       ('Uptime/Load', commands.uptime)])
 
@@ -61,7 +93,7 @@ def main():
             menu.do_loop()
         time.sleep(WHILE_DELAY)
 
-
+    '''
 
 if __name__ == '__main__':
     main()

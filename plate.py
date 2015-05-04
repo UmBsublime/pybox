@@ -21,6 +21,7 @@ class Plate():
         self.old_lines[1] = self.lines[1]
         self.old_lines[2] = self.lines[2]
 
+
         self.lines[1] = line_1[:16]
         self.lines[2] = line_2[:16]
 
