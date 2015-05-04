@@ -10,7 +10,7 @@ GREEN = (0, 1, 0)
 RED = (1, 0, 0)
 OFF = (0, 0, 0)
 
-COMMAND_DELAY = 0.8
+COMMAND_DELAY = 3.0
 WHILE_DELAY = 0.1
 
 BUTTONS = {'Up': Adafruit_LCD.UP,

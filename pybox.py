@@ -34,8 +34,10 @@ def main():
 
     ipconf = ScrollType(commands.ipconfig(),GREEN)
     uptime = DynamicType(commands.uptime, CYAN)
+    hostname = DynamicType(commands.hostname,YELLOW)
     menu = MenuType([('Ip Config', ipconf),
-                     ('Uptime', uptime)], WHITE)
+                     ('Uptime', uptime),
+                     ('Hostname', hostname)], WHITE)
 
     menu.execute()
 
@@ -55,45 +57,6 @@ def main():
             time.sleep(WHILE_DELAY*2)
             menu.execute()
         time.sleep(WHILE_DELAY)
-    '''
-    settings = deque([('Ip config', commands.ipconfig),
-                      ('Uptime/Load', commands.uptime)])
-
-    status = deque([('Ip config', commands.ipconfig),
-                    ('Uptime/Load', commands.uptime),
-                    ('hostname', commands.hostname),
-                    ('MemInfo', commands.mem_info)])
-
-    dir = deque([('ls', commands.ls),
-                 ('df', commands.df),
-                 ('who', commands.who)])
-    plate.set_color(WHITE)
-    menu = WheelMenu(plate, [('Help', commands.help),
-                             ('Settings', settings),
-                             ('Status', status),
-                             ('Dir', dir)])
-
-
-    menu.do_loop()
-    line1 = '{:^16}'.format('Quit ?')
-    line2 = '{:^16}'.format('Yes\x06 \x05No')
-
-    while True:
-        plate.set_lines(line1, line2)
-        plate.update_plate(RED)
-        if LCD.is_pressed(BUTTONS['Left']):
-            plate.set_lines('{:^16}'.format('Goodbye'), '')
-            plate.update_plate(WHITE)
-            time.sleep(2)
-            plate.set_lines('', '')
-            plate.update_plate(OFF)
-            break
-        elif LCD.is_pressed(BUTTONS['Right']):
-            time.sleep(WHILE_DELAY*2)
-            menu.do_loop()
-        time.sleep(WHILE_DELAY)
-
-    '''
 
 if __name__ == '__main__':
     main()

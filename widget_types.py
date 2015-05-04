@@ -125,14 +125,20 @@ class DynamicType():
         BaseType.plate.set_lines(lines[0], lines[1])
         BaseType.plate.update_plate(self.color)
         time.sleep(WHILE_DELAY*2)
+        count = WHILE_DELAY*2
         while True:
             if LCD.is_pressed(BUTTONS['Left']):
                 time.sleep(WHILE_DELAY*2)
                 break
 
-            lines = self.get_current_lines()
-            DynamicType.plate.set_lines(lines[0], lines[1])
-            DynamicType.plate.update_plate(self.color)
+            if count >= COMMAND_DELAY:
+                lines = self.get_current_lines()
+                BaseType.plate.set_lines(lines[0], lines[1])
+                count = 0
+
+                BaseType.plate.update_plate(self.color)
+
+            count += WHILE_DELAY
             time.sleep(WHILE_DELAY)
 
 
