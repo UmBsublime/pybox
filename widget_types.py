@@ -108,12 +108,13 @@ class DynamicType():
 
     plate = Plate()
 
-    def __init__(self, function, color):
+    def __init__(self, function, color, delay=3.0):
         '''
             function, well, has to be a function...
         '''
         self.function = function
         self.color = color
+        self.delay = delay
         #super(DynamicType, self).__init__(content)
 
     def get_current_lines(self):
@@ -131,15 +132,16 @@ class DynamicType():
                 time.sleep(WHILE_DELAY*2)
                 break
 
-            if count >= COMMAND_DELAY:
+            if count >= self.delay:
                 lines = self.get_current_lines()
                 BaseType.plate.set_lines(lines[0], lines[1])
                 count = 0
 
                 BaseType.plate.update_plate(self.color)
+            else:
 
-            count += WHILE_DELAY
-            time.sleep(WHILE_DELAY)
+                count += WHILE_DELAY
+                time.sleep(WHILE_DELAY)
 
 
 def main():
