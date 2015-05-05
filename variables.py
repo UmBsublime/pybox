@@ -20,7 +20,6 @@ LCD.create_char(6, [2, 6, 10, 18, 10, 6, 2, 0])
 LCD.create_char(7, [31, 17, 21, 21, 21, 21, 17, 31])
 
 
-
 COMMAND_DELAY = 3.0
 WHILE_DELAY = 0.1
 

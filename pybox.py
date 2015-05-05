@@ -5,17 +5,12 @@
 import time
 
 import commands
+from plate import Plate
 from widget_types import ScrollType, DynamicType, MenuType
 from variables import *
 
 
-
-
 def main():
-
-    print 'Press Ctrl-C to quit.'
-
-
 
     ipconf = ScrollType(commands.ipconfig(),GREEN)
     ls_root = ScrollType(commands.ls('/'),GREEN)
@@ -45,19 +40,16 @@ def main():
         time.sleep(WHILE_DELAY)
 
 if __name__ == '__main__':
-    from plate import Plate
+
     plate = Plate()
+
+    print 'Press Ctrl-C to quit.'
     try:
         main()
     except KeyboardInterrupt:
-        plate.set_lines('{:^16}'.format('Goodbye'), '')
-        plate.update_plate(WHITE)
-        time.sleep(0.3)
-        plate.set_lines('', '')
-        plate.update_plate(OFF)
-    else:
-        plate.set_lines('{:^16}'.format('Goodbye'), '')
-        plate.update_plate(WHITE)
-        time.sleep(0.3)
-        plate.set_lines('', '')
-        plate.update_plate(OFF)
+        pass
+    plate.set_lines('{:^16}'.format('Goodbye'), '')
+    plate.update_plate(WHITE)
+    time.sleep(0.3)
+    plate.set_lines('', '')
+    plate.update_plate(OFF)

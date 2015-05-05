@@ -4,6 +4,7 @@ from collections import deque
 from variables import *
 from plate import Plate
 
+
 class BaseType(object):
 
     plate = Plate()
@@ -146,12 +147,11 @@ class DynamicType():
 
 def main():
     def dummy():
-        return ['dummy','reporting in']
+        return ['dummy', 'reporting in']
     filet = ScrollType(['test file1', 'test file2', 'test file3'], GREEN)
     dyn = DynamicType(dummy, BLUE)
-    menu = MenuType([('dyn',dyn),
-                     ('filet',filet)], RED)
-
+    menu = MenuType([('dyn', dyn),
+                     ('filet', filet)], RED)
 
     print menu.__dict__
     print filet.__dict__
@@ -160,6 +160,6 @@ def main():
     while True:
         menu.execute()
 
+
 if __name__ == '__main__':
     main()
-

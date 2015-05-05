@@ -4,11 +4,11 @@ from subprocess import check_output
 
 
 time_init = time.time()
+
+
 def runtime():
     diff = time.time() - time_init
-    return ['{:^16}'.format('Runtime:'),'{:^16.3f}'.format(diff)]
-
-
+    return ['{:^16}'.format('Runtime:'), '{:^16.3f}'.format(diff)]
 
 
 def cmd(command):
@@ -50,9 +50,6 @@ def uptime():
     up = up.split('user')[0].split(' ')
     up = up[:-3]
     up = up[3:]
-    #clean_up =[]
-    #for i in up:
-    #    clean_up.append(i.strip(','))
 
     return ('{:^16}'.format(' '.join(up).strip(',')),
             '{}  {}  {}'.format(load[0].strip(','),
@@ -73,7 +70,8 @@ def hostname():
     date = cmd('date +"%b %d %H:%M:%S"')
     return '{:^16}'.format(result.strip('\n')), date.strip('\n')
 
-def help():
+
+def pybox_help():
     return ['pybox 0.1',
             '----------------',
             'Use Up/Down to',
@@ -96,16 +94,17 @@ def help():
 
 def who():
     command = r''' w | tail -n +3| awk '{print $1,$4}' '''
-    who = cmd(command).split('\n')
+    who_r = cmd(command).split('\n')
 
     final = ['{:<7} {:<8}'.format('USER', 'LOGIN@'),
              '-'*16]
-    for w in who:
+    for w in who_r:
         w = w.split(' ')
         if len(w) >= 2:
             final.append('{:<7} {:<8}'.format(w[0], w[1]))
     final.append('-'*16)
     return final
+
 
 def df():
 
@@ -117,17 +116,17 @@ def df():
         part = part.split(' ')
         if len(part) >= 3 and len(part[2]) <= 6:
             pretty = '{:<6} {:>3} {:.2f}Gb'.format(part[2],
-                                               part[1],
-                                               float(part[0])/1024/1024)
+                                                   part[1],
+                                                   float(part[0])/1024/1024)
             sorted_part.append(pretty)
     sorted_part.append('-'*16)
     return sorted_part
 
-def ls(path = '.'):
+
+def ls(path='.'):
     result = cmd('ls '+path).split('\n')
     for e in result:
         if e == '':
             result.remove(e)
-
 
     return result
