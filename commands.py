@@ -1,4 +1,14 @@
+import time
+
 from subprocess import check_output
+
+
+time_init = time.time()
+def runtime():
+    diff = time.time() - time_init
+    return ['{:^16}'.format('Runtime:'),'{:^16.3f}'.format(diff)]
+
+
 
 
 def cmd(command):
@@ -113,8 +123,8 @@ def df():
     sorted_part.append('-'*16)
     return sorted_part
 
-def ls():
-    result = cmd('ls').split('\n')
+def ls(path = '.'):
+    result = cmd('ls '+path).split('\n')
     for e in result:
         if e == '':
             result.remove(e)
