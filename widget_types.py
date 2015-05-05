@@ -15,7 +15,10 @@ class BaseType(object):
             if the strings are not 16 digit long,
             init will truncate
         '''
-        self.content = deque(content)
+        trim_content = []
+        for e in content:
+            trim_content.append(e[:16])
+        self.content = deque(trim_content)
         self.color = color
         pass
 
