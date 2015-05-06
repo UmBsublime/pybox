@@ -12,28 +12,27 @@ from variables import *
 
 def main():
 
-    ipconf = ScrollType(commands.ipconfig(),GREEN)
-    ls_root = ScrollType(commands.ls('/'),GREEN)
-    df = ScrollType(commands.df(),GREEN)
-    who = ScrollType(commands.who(),GREEN)
-    meminfo = ScrollType(commands.mem_info(),GREEN)
-    help = ScrollType(commands.pybox_help(), GREEN)
+    ipconfig = ScrollType(commands.ipconfig(), GREEN)
+    ls_root = ScrollType(commands.ls('/'), GREEN)
+    df = ScrollType(commands.df(), GREEN)
+    who = ScrollType(commands.who(), GREEN)
+    mem_info = ScrollType(commands.mem_info(), GREEN)
+    pybox_help = ScrollType(commands.pybox_help(), GREEN)
 
     run_time = DynamicType(commands.runtime, BLUE, 0.75)
     uptime = DynamicType(commands.uptime, CYAN)
-    hostname = DynamicType(commands.hostname,YELLOW)
-
+    hostname = DynamicType(commands.hostname, YELLOW)
 
     status = MenuType([('Hostname', hostname),
                        ('Uptime', uptime),
                        ('Who', who),
-                       ('Ip Config', ipconf),
+                       ('Ip Config', ipconfig),
                        ('Disk Usage', df),
-                       ('Mem Info', meminfo)], WHITE)
+                       ('Mem Info', mem_info)], WHITE)
 
-    menu = MenuType([('Help',help),
-                     ('Runtime',run_time),
-                     ('ls /',ls_root),
+    menu = MenuType([('Help', pybox_help),
+                     ('Runtime', run_time),
+                     ('ls /', ls_root),
                      ('Status', status)], WHITE)
 
     menu.execute()
