@@ -35,6 +35,7 @@ def main():
                      ('ls /', ls_root),
                      ('Status', status)], WHITE)
 
+    print menu.__dict__
     menu.execute()
 
     line1 = '{:^16}'.format('Quit ?')
