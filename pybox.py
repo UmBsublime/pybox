@@ -16,8 +16,8 @@ def main():
     ls_root = ScrollType(commands.ls('/'),GREEN)
     df = ScrollType(commands.df(),GREEN)
     who = ScrollType(commands.who(),GREEN)
-    meminfo = ScrollType(commands.meminfo(),GREEN)
-    help = ScrollType(commands.help(), GREEN)
+    meminfo = ScrollType(commands.mem_info(),GREEN)
+    help = ScrollType(commands.pybox_help(), GREEN)
 
     run_time = DynamicType(commands.runtime, BLUE, 0.75)
     uptime = DynamicType(commands.uptime, CYAN)
@@ -32,8 +32,9 @@ def main():
                        ('Mem Info', meminfo)], WHITE)
 
     menu = MenuType([('Help',help),
+                     ('Runtime',run_time),
                      ('ls /',ls_root),
-                     ('Status', status))], WHITE)
+                     ('Status', status)], WHITE)
 
     menu.execute()
 
