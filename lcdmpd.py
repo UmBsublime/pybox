@@ -23,7 +23,7 @@ Requires:
 """
 
 import re
-from mpd import MPDClient, CommandError
+from mpd import MPDClient, CommandError, ConnectionError
 from socket import error as SocketError
 from time import time
 
@@ -33,23 +33,25 @@ class Py3status:
     """
     # available configuration parameters
     cache_timeout = 2
-    color = None
-    format = '{state} №{pos}. {artist} - {title} [{time}] | {next_title}'
+    color = 'BLUE'
+    format = '{artist}-{title}'
     host = 'localhost'
-    max_width = 14
+    max_width = 16
     port = '6600'
 
     def __init__(self):
         self.text = ''
 
-    def current_track(self, i3s_output_list, i3s_config):
+    def current_track(self, colors):
+
+        self.colors = {'play': 'GREEN',
+                  'stop': 'RED'}
+        text = ""
         try:
             c = MPDClient()
             c.connect(host=self.host, port=self.port)
-
             status = c.status()
-            song = int(status.get("song", 0))
-            next_song = int(status.get("nextsong", 0))
+            song = int(status   .get("song", 0))
 
             if (status["state"] == "pause") or (status["state"] == "stop"):
                 text = ""
@@ -60,15 +62,7 @@ class Py3status:
                 except IndexError:
                     song = {}
 
-                try:
-                    next_song = c.playlistinfo()[next_song]
-                except IndexError:
-                    next_song = {}
-
                 format_args = song
-                for k, v in next_song.items():
-                    format_args["next_{}".format(k)] = v
-
                 text = self.format
                 for k, v in format_args.items():
                     text = text.replace("{" + k + "}", v)
@@ -80,9 +74,11 @@ class Py3status:
         except CommandError:
             text = "Failed to authenticate to mpd!"
             c.disconnect()
+        except ConnectionError:
+            text = "Lost connection"
 
         if len(text) > self.max_width:
-            text = text[-self.max_width-3:] + ".."
+            text = text[:self.max_width-2] + ".."
 
         if self.text != text:
             transformed = True
@@ -91,13 +87,14 @@ class Py3status:
             transformed = False
 
         response = {
-            'cached_until': time() + self.cache_timeout,
             'full_text': self.text,
             'transformed': transformed
         }
 
-        if self.color:
-            response['color'] = self.color
+        if text == '':
+            response['color'] = self.colors['stop']
+        else:
+            response['color'] = self.colors['play']
         print response
         return response
 
@@ -112,5 +109,5 @@ if __name__ == "__main__":
         'color_bad': '#FF0000',
     }
     while True:
-        print(x.current_track([], config))
-        sleep(1)
+        x.current_track(config)
+        sleep(2)
