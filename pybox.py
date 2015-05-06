@@ -14,16 +14,26 @@ def main():
 
     ipconf = ScrollType(commands.ipconfig(),GREEN)
     ls_root = ScrollType(commands.ls('/'),GREEN)
-    run_time = DynamicType(commands.runtime, BLUE, 0.75)
+    df = ScrollType(commands.df(),GREEN)
+    who = ScrollType(commands.who(),GREEN)
+    meminfo = ScrollType(commands.meminfo(),GREEN)
+    help = ScrollType(commands.help(), GREEN)
 
+    run_time = DynamicType(commands.runtime, BLUE, 0.75)
     uptime = DynamicType(commands.uptime, CYAN)
     hostname = DynamicType(commands.hostname,YELLOW)
 
-    menu = MenuType([('Runtime',run_time),
+
+    status = MenuType([('Hostname', hostname),
+                       ('Uptime', uptime),
+                       ('Who', who),
+                       ('Ip Config', ipconf),
+                       ('Disk Usage', df),
+                       ('Mem Info', meminfo)], WHITE)
+
+    menu = MenuType([('Help',help),
                      ('ls /',ls_root),
-                     ('Ip Config', ipconf),
-                     ('Uptime', uptime),
-                     ('Hostname', hostname)], WHITE)
+                     ('Status', status))], WHITE)
 
     menu.execute()
 
