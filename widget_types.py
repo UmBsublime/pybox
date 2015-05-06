@@ -18,15 +18,17 @@ class BaseType(object):
         trim_content = []
         for e in content:
             trim_content.append(e[:16])
-        self.content = deque(trim_content)
+        self.content = trim_content
         self.color = color
         pass
 
     def get_current_lines(self):
         pass
 
-    def rotate(self, direction=1):
-        self.content.rotate(direction)
+    def _rotate(self, direction=1):
+        t = deque(self.content)
+        t.rotate(direction)
+        self.content = list(t)
 
 
 class MenuType(BaseType):
@@ -39,11 +41,16 @@ class MenuType(BaseType):
              ('demo_dyn', reference_to_DynamicType),
              . . .]
         '''
-        self.menu = deque(menu)
+        self.menu = menu
         content = []
         for i in menu:
             content.append(i[0])
         super(MenuType, self).__init__(content, color)
+
+    def _rotate(self, direction=1):
+        t = deque(self.menu)
+        t.rotate(direction)
+        self.menu = list(t)
 
     def get_current_lines(self, pointer='\x05'):
         line1 = list(self.menu)[0][0]
@@ -60,10 +67,10 @@ class MenuType(BaseType):
         time.sleep(WHILE_DELAY*2)
         while True:
             if LCD.is_pressed(BUTTONS['Down']):
-                self.menu.rotate(-1)
+                self._rotate(-1)
                 lines = self.get_current_lines()
             if LCD.is_pressed(BUTTONS['Up']):
-                self.menu.rotate()
+                self._rotate()
                 lines = self.get_current_lines()
             if LCD.is_pressed(BUTTONS['Left']):
                 time.sleep(WHILE_DELAY*2)
@@ -95,10 +102,10 @@ class ScrollType(BaseType):
         time.sleep(WHILE_DELAY*2)
         while True:
             if LCD.is_pressed(BUTTONS['Down']):
-                self.content.rotate(-1)
+                self._rotate(-1)
                 lines = self.get_current_lines()
             if LCD.is_pressed(BUTTONS['Up']):
-                self.content.rotate()
+                self._rotate()
                 lines = self.get_current_lines()
             if LCD.is_pressed(BUTTONS['Left']):
                 time.sleep(WHILE_DELAY*2)
@@ -143,7 +150,6 @@ class DynamicType():
 
                 BaseType.plate.update_plate(self.color)
             else:
-
                 count += WHILE_DELAY
                 time.sleep(WHILE_DELAY)
 

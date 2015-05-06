@@ -16,9 +16,9 @@ def main():
     ls_root = ScrollType(commands.ls('/'), GREEN)
     df = ScrollType(commands.df(), GREEN)
     who = ScrollType(commands.who(), GREEN)
-    mem_info = ScrollType(commands.mem_info(), GREEN)
     pybox_help = ScrollType(commands.pybox_help(), GREEN)
 
+    mem_info = DynamicType(commands.mem_info, CYAN)
     run_time = DynamicType(commands.runtime, BLUE, 0.75)
     uptime = DynamicType(commands.uptime, CYAN)
     hostname = DynamicType(commands.hostname, YELLOW)
@@ -34,8 +34,11 @@ def main():
                      ('Runtime', run_time),
                      ('ls /', ls_root),
                      ('Status', status)], WHITE)
+    from pprint import pprint
+    for i in list(menu.__dict__['menu']):
+        print
+        pprint(i[1].__dict__,indent=4)
 
-    print menu.__dict__
     menu.execute()
 
     line1 = '{:^16}'.format('Quit ?')
