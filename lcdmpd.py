@@ -23,11 +23,11 @@ Requires:
 """
 
 import re
-from mpd import MPDClient, CommandError, ConnectionError
+from mpd import MPDClient, ConnectionError
 from socket import error as SocketError
 from time import time
 
-from variables import RED, GREEN, BLUE
+from variables import RED, GREEN, BLUE, COMMAND_DELAY
 
 class Py3status:
     """
@@ -35,54 +35,76 @@ class Py3status:
     # available configuration parameters
     cache_timeout = 2
     color = BLUE
-    format = '{artist}-{title}'
+    format_line1 = '{artist}-{title}'
+    format_line2 = '{elapsed}/{duration}'
     host = 'localhost'
     max_width = 16
     port = '6600'
 
     def __init__(self):
-        self.text = ''
+        self.text = ['', '']
+        try:
+            self.c = MPDClient()
+            self.c.connect(host=self.host, port=self.port)
+        except ConnectionError:
+            self.text[0] = "Can't connect"
+            pass
+
+    def disconnect(self):
+        self.c.disconnect()
+
+    def song_list(self, artist=''):
+        pass
+
+    def artist_list(self):
+        pass
 
     def current_track(self, colors):
 
         self.colors = colors
-        text = ""
-        try:
-            c = MPDClient()
-            c.connect(host=self.host, port=self.port)
-            status = c.status()
-            song = int(status   .get("song", 0))
+        line_1 = ""
+        line_2 = ""
 
-            if (status["state"] == "pause") or (status["state"] == "stop"):
-                text = ""
-            else:
-                try:
-                    song = c.playlistinfo()[song]
-                    song["time"] = "{0:.2f}".format(int(song.get("time", 1)) / 60)
-                except IndexError:
-                    song = {}
+        status = self.c.status()
+        print status
+        song = int(status.get("song", 0))
 
-                format_args = song
-                text = self.format
-                for k, v in format_args.items():
-                    text = text.replace("{" + k + "}", v)
 
-                for sub in re.findall(r"{\S+?}", text):
-                    text = text.replace(sub, "")
-        except SocketError:
-            text = "Failed to connect to mpd!"
-        except CommandError:
-            text = "Failed to authenticate to mpd!"
-            c.disconnect()
-        except ConnectionError:
-            #text = "Lost connection"
-            pass
-        if len(text) > self.max_width:
-            text = text[:self.max_width-2] + ".."
+        if (status["state"] == "pause") or (status["state"] == "stop"):
+            line_1 = ""
+        else:
 
-        if self.text != text:
+            try:
+                song_time = self.c.playlistinfo()[song]
+                time = status['time'].split(':')
+                print
+                print song_time
+                print
+                song_time["elapsed"] = time[0]
+                song_time["duration"] = time[1]
+            except IndexError:
+                song_time = {}
+
+            format_args = song_time
+            line_1 = self.format_line1
+            line_2 = self.format_line2
+            for k, v in format_args.items():
+                line_1 = line_1.replace("{" + k + "}", v)
+                line_2 = line_2.replace("{" + k + "}", v)
+
+            for sub in re.findall(r"{\S+?}", line_1):
+                line_1 = line_1.replace(sub, "")
+
+
+        if len(line_1) > self.max_width:
+            line_1 = line_1[:self.max_width-2] + ".."
+        if len(line_2) > self.max_width:
+            line_2 = line_2[:self.max_width-2] + ".."
+
+        if (self.text[0] != line_1) or (self.text[1] != line_2):
             transformed = True
-            self.text = text
+            self.text[0] = line_1
+            self.text[1] = line_2
         else:
             transformed = False
 
@@ -92,7 +114,7 @@ class Py3status:
             'color': None
         }
 
-        if text == '' or text == "Lost connection":
+        if line_1 == '':
             response['color'] = self.colors['color_bad']
         else:
             response['color'] = self.colors['color_good']
@@ -111,4 +133,6 @@ if __name__ == "__main__":
     }
     while True:
         x.current_track(config)
-        sleep(5)
+        sleep(COMMAND_DELAY)
+
+    x.disconnect()
