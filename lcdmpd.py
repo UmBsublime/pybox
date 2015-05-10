@@ -27,7 +27,8 @@ from mpd import MPDClient, ConnectionError
 from socket import error as SocketError
 from time import time
 
-from variables import RED, GREEN, BLUE, COMMAND_DELAY
+from widget_types import ScrollType, DynamicType
+from variables import RED, GREEN, BLUE, CYAN, COMMAND_DELAY
 
 class Py3status:
     """
@@ -54,14 +55,25 @@ class Py3status:
         self.c.disconnect()
 
     def song_list(self, artist=''):
-        pass
+        song_l = self.c.list('Title', 'Artist', artist)
+        return ScrollType(song_l, CYAN)
 
     def artist_list(self):
-        pass
+        artist_l = self.c.list('Artist')
+        return ScrollType(artist_l, BLUE)
 
-    def current_track(self, colors):
+    def current_track_dyn(self):
+        track = self.current_track()
+        #color = self.current_track()
 
-        self.colors = colors
+        d = DynamicType(self.current_track_text,track['color'])
+        return d
+
+
+    def current_track(self, colors=(GREEN, RED)):
+
+        self.colors = {'color_good': colors[0],
+                       'color_bad': colors[1]}
         line_1 = ""
         line_2 = ""
 
@@ -121,12 +133,21 @@ class Py3status:
         print response
         return response
 
+    def current_track_text(self):
+        t = self.current_track()
+        return t['full_text']
+
 if __name__ == "__main__":
     """
     Test this module by calling it directly.
     """
     from time import sleep
+    from pprint import pprint
     x = Py3status()
+    a = x.artist_list()
+    pprint(a.content)
+    s = x.song_list(a.content[0])
+    pprint(s.content)
     config = {
         'color_good': GREEN,
         'color_bad': RED,

@@ -154,6 +154,14 @@ class DynamicType():
                 time.sleep(WHILE_DELAY)
 
 
+class TreeType():
+    def __init__(self):
+        pass
+
+class LeafType():
+    def __init__(self):
+        pass
+
 def main():
     def dummy():
         return ['dummy', 'reporting in']

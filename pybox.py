@@ -30,7 +30,26 @@ def main():
                        ('Disk Usage', df),
                        ('Mem Info', mem_info)], WHITE)
 
-    menu = MenuType([('Help', pybox_help),
+    ################
+    # Mpd testing
+    ################
+    from lcdmpd import Py3status
+    mpd = Py3status()
+
+    artist_t = mpd.artist_list()
+    song_t = mpd.song_list(artist_t.content[0])
+    artist_t.content.append('dummy data')
+    track_t = mpd.current_track_dyn()
+
+
+
+    mpd_m = MenuType([('Artist', artist_t),
+                      ('Track', track_t),
+                      ('Eskmo Song', song_t)], RED)
+    ################
+
+    menu = MenuType([('mpd', mpd_m),
+                     ('Help', pybox_help),
                      ('Runtime', run_time),
                      ('ls /', ls_root),
                      ('Status', status)], WHITE)
