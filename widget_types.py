@@ -154,9 +154,49 @@ class DynamicType():
                 time.sleep(WHILE_DELAY)
 
 
-class TreeType():
-    def __init__(self):
-        pass
+from lcdmpd import Py3status
+
+class MpdListType(ScrollType):
+    def __init__(self, color):
+
+        self.mpd = Py3status()
+        content = self.mpd.artist_list()
+        content = content.content
+        content.append('dummy artist')
+        print content
+        super(ScrollType, self).__init__(content, color)
+
+    def get_list(self, query = ''):
+        if query == '':
+            list = self.mpd.artist_list()
+        else:
+            list = self.mpd.song_list(query)
+
+        return list
+
+    def execute(self):
+        lines = self.get_current_lines()
+        BaseType.plate.set_lines(lines[0], lines[1])
+        BaseType.plate.update_plate(self.color)
+        time.sleep(WHILE_DELAY*2)
+        while True:
+            if LCD.is_pressed(BUTTONS['Down']):
+                self._rotate(-1)
+                lines = self.get_current_lines()
+            if LCD.is_pressed(BUTTONS['Up']):
+                self._rotate()
+                lines = self.get_current_lines()
+            if LCD.is_pressed(BUTTONS['Left']):
+                time.sleep(WHILE_DELAY*2)
+                break
+            if LCD.is_pressed(BUTTONS['Right']):
+                t = self.get_list(self.content[0])
+                time.sleep(WHILE_DELAY*2)
+                t.execute()
+
+            BaseType.plate.set_lines(lines[0], lines[1])
+            ScrollType.plate.update_plate(self.color)
+            time.sleep(WHILE_DELAY)
 
 class LeafType():
     def __init__(self):

@@ -6,7 +6,7 @@ import time
 
 import commands
 from plate import Plate
-from widget_types import ScrollType, DynamicType, MenuType
+from widget_types import ScrollType, DynamicType, MenuType, MpdListType
 from variables import *
 
 
@@ -36,16 +36,18 @@ def main():
     from lcdmpd import Py3status
     mpd = Py3status()
 
-    artist_t = mpd.artist_list()
-    song_t = mpd.song_list(artist_t.content[0])
-    artist_t.content.append('dummy data')
+    #artist_t = mpd.artist_list()
+    #song_t = mpd.song_list(artist_t.content[0])
+    #artist_t.content.append('dummy data')
     track_t = mpd.current_track_dyn()
 
+    mpd_menu_t = MpdListType(BLUE)
 
 
-    mpd_m = MenuType([('Artist', artist_t),
-                      ('Track', track_t),
-                      ('Eskmo Song', song_t)], RED)
+    mpd_m = MenuType([('mpd_aritst', mpd_menu_t),
+                      #('Artist', artist_t),
+                      ('Track', track_t)], RED)
+                      #('Eskmo Song', song_t)], RED)
     ################
 
     menu = MenuType([('mpd', mpd_m),
