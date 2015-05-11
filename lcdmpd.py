@@ -27,13 +27,14 @@ from mpd import MPDClient, CommandError, ConnectionError
 from socket import error as SocketError
 from time import time
 
+from variables import RED, GREEN, BLUE
 
 class Py3status:
     """
     """
     # available configuration parameters
     cache_timeout = 2
-    color = 'BLUE'
+    color = BLUE
     format = '{artist}-{title}'
     host = 'localhost'
     max_width = 16
@@ -44,8 +45,7 @@ class Py3status:
 
     def current_track(self, colors):
 
-        self.colors = {'play': 'GREEN',
-                  'stop': 'RED'}
+        self.colors = colors
         text = ""
         try:
             c = MPDClient()
@@ -75,8 +75,8 @@ class Py3status:
             text = "Failed to authenticate to mpd!"
             c.disconnect()
         except ConnectionError:
-            text = "Lost connection"
-
+            #text = "Lost connection"
+            pass
         if len(text) > self.max_width:
             text = text[:self.max_width-2] + ".."
 
@@ -88,13 +88,14 @@ class Py3status:
 
         response = {
             'full_text': self.text,
-            'transformed': transformed
+            'transformed': transformed,
+            'color': None
         }
 
-        if text == '':
-            response['color'] = self.colors['stop']
+        if text == '' or text == "Lost connection":
+            response['color'] = self.colors['color_bad']
         else:
-            response['color'] = self.colors['play']
+            response['color'] = self.colors['color_good']
         print response
         return response
 
@@ -105,9 +106,9 @@ if __name__ == "__main__":
     from time import sleep
     x = Py3status()
     config = {
-        'color_good': '#00FF00',
-        'color_bad': '#FF0000',
+        'color_good': GREEN,
+        'color_bad': RED,
     }
     while True:
         x.current_track(config)
-        sleep(2)
+        sleep(5)
