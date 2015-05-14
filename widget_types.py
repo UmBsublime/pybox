@@ -170,8 +170,9 @@ class DynamicType():
 from lcdmpd import Py3status
 
 class MpdListType(ScrollType):
-    def __init__(self, color):
+    def __init__(self, color, right_action=None):
 
+        self.right_action = right_action
         self.mpd = Py3status()
         content = self.mpd.artist_list()
         content = content.content

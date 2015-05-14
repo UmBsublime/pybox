@@ -101,8 +101,8 @@ class Py3status:
             line_1 = self.format_line1
             line_2 = self.format_line2
             for k, v in format_args.items():
-                line_1 = line_1.replace("{" + k + "}", v)
-                line_2 = line_2.replace("{" + k + "}", v)
+                line_1 = line_1.replace("{" + k + "}", str(v))
+                line_2 = line_2.replace("{" + k + "}", str(v))
 
             for sub in re.findall(r"{\S+?}", line_1):
                 line_1 = line_1.replace(sub, "")
