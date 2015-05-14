@@ -88,25 +88,38 @@ class ScrollType(BaseType):
     def __init__(self, content, color):
         super(ScrollType, self).__init__(content, color)
 
-    def get_current_lines(self):
+    def get_current_lines(self, pointer=' '):
+
+
         line1 = list(self.content)[0]
         line2 = list(self.content)[1]
 
-        lines = [line1, line2]
+        lines = [pointer+line1,
+                 ' '+line2]
         return lines
 
-    def execute(self):
-        lines = self.get_current_lines()
+    def execute(self, pointer=None):
+        if pointer:
+            lines = self.get_current_lines('\x05')
+        else:
+            lines = self.get_current_lines()
+        #lines = self.get_current_lines()
         BaseType.plate.set_lines(lines[0], lines[1])
         BaseType.plate.update_plate(self.color)
         time.sleep(WHILE_DELAY*2)
         while True:
             if LCD.is_pressed(BUTTONS['Down']):
                 self._rotate(-1)
-                lines = self.get_current_lines()
+                if pointer:
+                    lines = self.get_current_lines('\x05')
+                else:
+                    lines = self.get_current_lines()
             if LCD.is_pressed(BUTTONS['Up']):
                 self._rotate()
-                lines = self.get_current_lines()
+                if pointer:
+                    lines = self.get_current_lines('\x05')
+                else:
+                    lines = self.get_current_lines()
             if LCD.is_pressed(BUTTONS['Left']):
                 time.sleep(WHILE_DELAY*2)
                 break
@@ -174,25 +187,25 @@ class MpdListType(ScrollType):
 
         return list
 
-    def execute(self):
-        lines = self.get_current_lines()
+    def execute(self, pointer='\x05'):
+        lines = self.get_current_lines('\x05')
         BaseType.plate.set_lines(lines[0], lines[1])
         BaseType.plate.update_plate(self.color)
         time.sleep(WHILE_DELAY*2)
         while True:
             if LCD.is_pressed(BUTTONS['Down']):
                 self._rotate(-1)
-                lines = self.get_current_lines()
+                lines = self.get_current_lines('\x05')
             if LCD.is_pressed(BUTTONS['Up']):
                 self._rotate()
-                lines = self.get_current_lines()
+                lines = self.get_current_lines('\x05')
             if LCD.is_pressed(BUTTONS['Left']):
                 time.sleep(WHILE_DELAY*2)
                 break
             if LCD.is_pressed(BUTTONS['Right']):
                 t = self.get_list(self.content[0])
                 time.sleep(WHILE_DELAY*2)
-                t.execute()
+                t.execute(pointer)
 
             BaseType.plate.set_lines(lines[0], lines[1])
             ScrollType.plate.update_plate(self.color)
