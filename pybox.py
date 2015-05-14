@@ -33,8 +33,8 @@ def main():
     ################
     # Mpd testing
     ################
-    from lcdmpd import Py3status
-    mpd = Py3status()
+    from lcdmpd import lcdmpd
+    mpd = lcdmpd()
 
     #artist_t = mpd.artist_list()
     #song_t = mpd.song_list(artist_t.content[0])
@@ -58,7 +58,7 @@ def main():
     from pprint import pprint
     for i in list(menu.__dict__['menu']):
         print
-        pprint(i[1].__dict__,indent=4)
+        #pprint(i[1].__dict__,indent=4)
 
     menu.execute()
 

@@ -30,7 +30,7 @@ from time import time
 from widget_types import ScrollType, DynamicType
 from variables import RED, GREEN, BLUE, CYAN, COMMAND_DELAY
 
-class Py3status:
+class lcdmpd:
     """
     """
     # available configuration parameters
@@ -56,11 +56,17 @@ class Py3status:
 
     def song_list(self, artist=''):
         song_l = self.c.list('Title', 'Artist', artist)
-        return ScrollType(song_l, CYAN)
+
+        return ScrollType(sorted(song_l), CYAN)
+
+    def play_song(self, song=''):
+        print self.c._fetch_command_list
 
     def artist_list(self):
+        self.play_song()
         artist_l = self.c.list('Artist')
-        return ScrollType(artist_l, BLUE)
+        return ScrollType(sorted(artist_l), BLUE)
+
 
     def current_track_dyn(self):
         track = self.current_track()
@@ -130,7 +136,7 @@ class Py3status:
             response['color'] = self.colors['color_bad']
         else:
             response['color'] = self.colors['color_good']
-        print response
+        #print response
         return response
 
     def current_track_text(self):
@@ -143,7 +149,7 @@ if __name__ == "__main__":
     """
     from time import sleep
     from pprint import pprint
-    x = Py3status()
+    x = lcdmpd()
     a = x.artist_list()
     pprint(a.content)
     s = x.song_list(a.content[0])

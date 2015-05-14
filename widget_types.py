@@ -11,14 +11,13 @@ class BaseType(object):
 
     def __init__(self, content, color):
         '''
-            content has to be a list of strings,
-            if the strings are not 16 digit long,
-            init will truncate
+
         '''
         trim_content = []
-        for e in content:
-            trim_content.append(e[:16])
-        self.content = trim_content
+        #for e in content:
+        #    trim_content.append(e[:16])
+        #self.content = trim_content
+        self.content = content
         self.color = color
         pass
 
@@ -88,14 +87,20 @@ class ScrollType(BaseType):
     def __init__(self, content, color):
         super(ScrollType, self).__init__(content, color)
 
-    def get_current_lines(self, pointer=' '):
+    def get_current_lines(self, pointer=None):
 
-
+        #print self.content
         line1 = list(self.content)[0]
-        line2 = list(self.content)[1]
-
-        lines = [pointer+line1,
-                 ' '+line2]
+        if len(list(self.content)) <= 1:
+            line2 = ''
+        else:
+            line2 = list(self.content)[1]
+        if pointer:
+            lines = [pointer+line1,
+                     ' '+line2]
+        else:
+            lines = [line1, line2]
+        print lines
         return lines
 
     def execute(self, pointer=None):
@@ -143,6 +148,8 @@ class DynamicType():
 
     def get_current_lines(self):
         lines = self.function()
+
+        print lines
         return lines
 
     def execute(self):
@@ -167,17 +174,17 @@ class DynamicType():
                 time.sleep(WHILE_DELAY)
 
 
-from lcdmpd import Py3status
+from lcdmpd import lcdmpd
 
 class MpdListType(ScrollType):
     def __init__(self, color, right_action=None):
 
         self.right_action = right_action
-        self.mpd = Py3status()
+        self.mpd = lcdmpd()
         content = self.mpd.artist_list()
         content = content.content
         content.append('dummy artist')
-        print content
+        #print content
         super(ScrollType, self).__init__(content, color)
 
     def get_list(self, query = ''):
