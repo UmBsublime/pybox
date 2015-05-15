@@ -135,3 +135,10 @@ def ls(path='.'):
             result.remove(e)
 
     return result
+
+
+def char_test():
+    result = ['{:^16}'.format('123456'),
+              '{:^16}'.format('\x01\x02\x03\x04\x05\x06')]
+
+    return result

@@ -50,7 +50,10 @@ def main():
                       #('Eskmo Song', song_t)], RED)
     ################
 
-    menu = MenuType([('mpd', mpd_m),
+
+    char_test = ScrollType(commands.char_test(), GREEN)
+    menu = MenuType([('Char Test', char_test),
+                     ('mpd', mpd_m),
                      ('Help', pybox_help),
                      ('Runtime', run_time),
                      ('ls /', ls_root),

@@ -84,7 +84,7 @@ class lcdmpd:
         line_2 = ""
 
         status = self.c.status()
-        print status
+        #print status
         song = int(status.get("song", 0))
 
 
@@ -95,11 +95,11 @@ class lcdmpd:
             try:
                 song_time = self.c.playlistinfo()[song]
                 time = status['time'].split(':')
-                print
-                print song_time
-                print
-                song_time["elapsed"] = time[0]
-                song_time["duration"] = time[1]
+                #print
+                #print song_time
+                #print
+                song_time["elapsed"] = convert_sec_to_min(time[0])
+                song_time["duration"] = convert_sec_to_min(time[1])
             except IndexError:
                 song_time = {}
 
@@ -114,10 +114,10 @@ class lcdmpd:
                 line_1 = line_1.replace(sub, "")
 
 
-        if len(line_1) > self.max_width:
-            line_1 = line_1[:self.max_width-2] + ".."
-        if len(line_2) > self.max_width:
-            line_2 = line_2[:self.max_width-2] + ".."
+        #if len(line_1) > self.max_width:
+        #    line_1 = line_1[:self.max_width-2] + ".."
+        #if len(line_2) > self.max_width:
+        #    line_2 = line_2[:self.max_width-2] + ".."
 
         if (self.text[0] != line_1) or (self.text[1] != line_2):
             transformed = True
@@ -137,11 +137,28 @@ class lcdmpd:
         else:
             response['color'] = self.colors['color_good']
         #print response
+        if response['full_text'][0] == '' and response['full_text'][1] == '':
+            response['full_text'] = ['{:^16}'.format('mpc'),
+                        '{:^16}'.format('nothing playing')]
         return response
 
     def current_track_text(self):
         t = self.current_track()
         return t['full_text']
+
+
+def convert_sec_to_min(second):
+    mins = str(int(second) / 60)
+    secs = str(int(second) % 60)
+
+    if int(secs) <= 9:
+        secs = '0'+secs
+    if str(mins) <= 0:
+        result = secs
+    else:
+        result = mins+':'+secs
+    return result
+
 
 if __name__ == "__main__":
     """

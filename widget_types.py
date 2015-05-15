@@ -183,8 +183,6 @@ class MpdListType(ScrollType):
         self.mpd = lcdmpd()
         content = self.mpd.artist_list()
         content = content.content
-        content.append('dummy artist')
-        #print content
         super(ScrollType, self).__init__(content, color)
 
     def get_list(self, query = ''):
@@ -197,8 +195,8 @@ class MpdListType(ScrollType):
 
     def execute(self, pointer='\x05'):
         lines = self.get_current_lines('\x05')
-        BaseType.plate.set_lines(lines[0], lines[1])
-        BaseType.plate.update_plate(self.color)
+        self.plate.set_lines(lines[0], lines[1])
+        self.plate.update_plate(self.color)
         time.sleep(WHILE_DELAY*2)
         while True:
             if LCD.is_pressed(BUTTONS['Down']):
@@ -215,7 +213,7 @@ class MpdListType(ScrollType):
                 time.sleep(WHILE_DELAY*2)
                 t.execute(pointer)
 
-            BaseType.plate.set_lines(lines[0], lines[1])
+            self.plate.set_lines(lines[0], lines[1])
             ScrollType.plate.update_plate(self.color)
             time.sleep(WHILE_DELAY)
 
